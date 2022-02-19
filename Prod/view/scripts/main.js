@@ -1,11 +1,12 @@
 'use strict';
 
-const applicationServerPublicKey = '-----';
+const applicationServerPublicKey = '-';
 
 const pushButton = document.querySelector('.js-push-btn');
 
 let isSubscribed = false;
 let swRegistration = null;
+let subscription_save
 
 if ('serviceWorker' in navigator && 'PushManager' in window) {
     console.log('Service Worker and Push is supported');
@@ -48,6 +49,7 @@ function initialiseUI() {
         pushButton.disabled = true;
         if (isSubscribed) {
             unsubscribeUser();
+
         } else {
             subscribeUser();
         }
@@ -78,10 +80,9 @@ function subscribeUser() {
         })
         .then(function(subscription) {
             console.log('User is subscribed:', subscription);
-            const subscriptionTextArea = document.querySelector('#push-subscription');
-            console.log(subscription)
+            subscription_save = subscription;
             updateSubscriptionOnServer(subscription);
-            sendPushMessage(JSON.stringify(subscription));
+            sendSubscriptionData(JSON.stringify(subscription));
             isSubscribed = true;
 
             updateBtn();
@@ -106,6 +107,7 @@ function updateSubscriptionOnServer(subscription) {
     } else {
         subscriptionDetails.classList.add('is-invisible');
 
+
     }
 }
 
@@ -121,8 +123,8 @@ function unsubscribeUser() {
             console.log('Error unsubscribing', error);
         })
         .then(function() {
+            removeSubscriptionData(JSON.stringify(subscription_save));
             updateSubscriptionOnServer(null);
-
             console.log('User is unsubscribed.');
             isSubscribed = false;
 
@@ -147,10 +149,8 @@ function updateBtn() {
     pushButton.disabled = false;
 }
 
-function sendPushMessage(subscription) {
-    console.log(subscription);
-
-    return fetch('https://domain/api/send-subs-data', {
+function sendSubscriptionData(subscription) {
+    return fetch('https://dominio/api/send-subs-data', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -158,6 +158,25 @@ function sendPushMessage(subscription) {
             body: subscription
         })
         .then((response) => {
+            if (response.status !== 200) {
+                return response.text()
+                    .then((responseText) => {
+                        throw new Error(responseText);
+                    });
+            }
+        });
+}
+
+function removeSubscriptionData(subscription) {
+    return fetch('https://dominio/api/remove-subs-data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: subscription
+        })
+        .then((response) => {
+            subscription_save = null;
             if (response.status !== 200) {
                 return response.text()
                     .then((responseText) => {
