@@ -15,3 +15,5 @@ As principais bibliotecas utilizadas forma a Express, Nigthmare e Web-push, toda
 
 ## Pessoas que contribuiram
 <p><a href="https://github.com/tuliosouzaa" target="_blank" rel="noopener">Marco Souza</p>
+<p><a href="https://github.com/ViniciusHSO" target="_blank" rel="noopener">Vinicius Henrique</p>
+  
