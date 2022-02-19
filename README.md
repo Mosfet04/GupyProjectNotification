@@ -1,7 +1,7 @@
 <h1 align="center">
 <div align="center">
   <p>
-    <strong>Notificações de atualizações das vagas de emprego na gupy</strong></h1>
+    <strong>Notificações de atualizações das vagas de emprego na Gupy</strong></h1>
   </p>
 </div>
 
